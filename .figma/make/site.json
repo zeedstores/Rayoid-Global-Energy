@@ -1,0 +1,10 @@
+{
+  "description": "This responsive website offers Raynoid Global Energy Ltd's energy, security, and automation services, enabling homeowners and businesses to easily explore solutions and request quotes.",
+  "robots": {
+    "index": false
+  },
+  "accessibility": {
+    "addBypassLinks": false,
+    "ignoreReducedMotion": false
+  }
+}
