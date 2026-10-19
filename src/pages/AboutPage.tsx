@@ -1,6 +1,4 @@
-
-import { Button, ResponsiveImage, SectionHeading } from '../components/ui';
-import { images } from '../data/site';
+import { Button, SectionHeading } from '../components/ui';
 
 export default function AboutPage() {
   return (
@@ -43,10 +41,10 @@ export default function AboutPage() {
           <div className="relative">
             <div className="aspect-[4/3] overflow-hidden rounded-2xl border border-white/10 bg-white/5 sm:aspect-[5/4]">
               <img
-  src="https://www.raynoidglobalenergy.com/assets/about-hero.PNG"
-  alt="Raynoid energy installation"
-  className="h-full w-full object-cover"
-/>
+                src="/assets/about-hero.PNG"
+                alt="Raynoid energy installation"
+                className="h-full w-full object-cover"
+              />
             </div>
 
             <div className="absolute -bottom-4 left-4 right-4 rounded-xl border border-white/10 bg-[#0B252B]/95 p-4 backdrop-blur sm:bottom-5 sm:left-5 sm:right-5 sm:p-5">
@@ -130,11 +128,11 @@ export default function AboutPage() {
             <div className="absolute -left-4 -top-4 h-24 w-24 rounded-tl-3xl border-l-2 border-t-2 border-[#49B765] sm:-left-6 sm:-top-6 sm:h-32 sm:w-32" />
 
             <div className="relative aspect-[4/3] overflow-hidden rounded-2xl bg-[#E8E9E2]">
-             <img
-  src="https://www.raynoidglobalenergy.com/assets/about-controls.JPG"
-  alt="Raynoid electrical control system"
-  className="h-full w-full object-cover"
-/>
+              <img
+                src="/assets/about-controls.JPG"
+                alt="Raynoid electrical control system"
+                className="h-full w-full object-cover"
+              />
             </div>
 
             <div className="absolute -bottom-4 -right-3 rounded-xl bg-[#06191F] px-5 py-4 text-white shadow-xl sm:-right-5 sm:px-7 sm:py-5">
