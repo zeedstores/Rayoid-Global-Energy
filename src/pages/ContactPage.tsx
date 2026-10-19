@@ -1,9 +1,44 @@
 
 import { QuoteForm } from '../components/QuoteForm';
 import { Button } from '../components/ui';
-import { company } from '../data/site';
+import { useCompanySettings } from '../hooks/useCompanySettings';
 
 export default function ContactPage() {
+  const company = useCompanySettings();
+
+  const phone = company.phone || '';
+  const whatsapp = company.whatsapp || '';
+  const email = company.email || '';
+  const address = company.address || '';
+  const whatsappHref = whatsapp
+    ? `https://wa.me/${whatsapp.replace(/\D/g, '')}`
+    : '';
+
+  const contactItems = [
+    {
+      label: 'Phone',
+      value: phone,
+      href: phone ? `tel:${phone.replace(/\s/g, '')}` : '',
+    },
+    {
+      label: 'WhatsApp',
+      value: whatsapp,
+      href: whatsappHref,
+    },
+    {
+      label: 'Email',
+      value: email,
+      href: email ? `mailto:${email}` : '',
+    },
+    {
+      label: 'Office',
+      value: address,
+      href: address
+        ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`
+        : '',
+    },
+  ];
+
   return (
     <>
       {/* CONTACT HERO */}
@@ -44,9 +79,11 @@ export default function ContactPage() {
               requirements before filling in the form.
             </p>
 
-            <Button to={company.whatsappHref} className="mt-6">
-              Chat on WhatsApp
-            </Button>
+            {whatsappHref && (
+              <Button to={whatsappHref} className="mt-6">
+                Chat on WhatsApp
+              </Button>
+            )}
           </div>
         </div>
       </section>
@@ -54,7 +91,6 @@ export default function ContactPage() {
       {/* CONTACT DETAILS AND QUOTE FORM */}
       <section className="bg-[#E8E9E2] py-16 sm:py-20 lg:py-24">
         <div className="site-container grid items-start gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:gap-16">
-
           {/* Contact information */}
           <div>
             <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#27934F]">
@@ -71,28 +107,13 @@ export default function ContactPage() {
             </p>
 
             <div className="mt-8 overflow-hidden rounded-2xl border border-[#06191F]/10 bg-white/70">
-              {[
-                {
-                  label: 'Phone',
-                  value: company.phone,
-                },
-                {
-                  label: 'WhatsApp',
-                  value: company.whatsapp,
-                },
-                {
-                  label: 'Email',
-                  value: company.email,
-                },
-                {
-                  label: 'Office',
-                  value: company.address,
-                },
-              ].map((item, index) => (
+              {contactItems.map((item, index) => (
                 <div
                   key={item.label}
                   className={`p-5 sm:p-6 ${
-                    index !== 3 ? 'border-b border-[#06191F]/10' : ''
+                    index !== contactItems.length - 1
+                      ? 'border-b border-[#06191F]/10'
+                      : ''
                   }`}
                 >
                   <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#27934F]">
@@ -100,7 +121,28 @@ export default function ContactPage() {
                   </p>
 
                   <p className="mt-2 break-words text-sm leading-7 text-[#06191F] sm:text-base">
-                    {item.value}
+                    {item.value ? (
+                      item.href ? (
+                        <a
+                          href={item.href}
+                          target={
+                            item.label === 'Office' ? '_blank' : undefined
+                          }
+                          rel={
+                            item.label === 'Office'
+                              ? 'noreferrer'
+                              : undefined
+                          }
+                          className="transition-colors hover:text-[#27934F]"
+                        >
+                          {item.value}
+                        </a>
+                      ) : (
+                        item.value
+                      )
+                    ) : (
+                      'Contact information not available'
+                    )}
                   </p>
                 </div>
               ))}
@@ -144,7 +186,6 @@ export default function ContactPage() {
               <QuoteForm />
             </div>
           </div>
-
         </div>
       </section>
 
@@ -161,12 +202,13 @@ export default function ContactPage() {
             </p>
           </div>
 
-          <Button to={company.whatsappHref}>
-            Message us on WhatsApp
-          </Button>
+          {whatsappHref && (
+            <Button to={whatsappHref}>
+              Message us on WhatsApp
+            </Button>
+          )}
         </div>
       </section>
     </>
   );
 }
-

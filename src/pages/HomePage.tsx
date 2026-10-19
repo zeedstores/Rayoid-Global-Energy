@@ -4,6 +4,7 @@ import { Link } from 'react-router';
 import { company, images, process } from '../data/site';
 import { Button, ResponsiveImage } from '../components/ui';
 import { supabase } from '../lib/supabase';
+import { useCompanySettings } from '../hooks/useCompanySettings';
 
 type ServiceRecord = {
   id: string;
@@ -61,6 +62,8 @@ function getShortDescription(description: string | null) {
 }
 
 export default function HomePage() {
+  const companySettings = useCompanySettings();
+
   const [services, setServices] = useState<ServiceRecord[]>([]);
   const [projects, setProjects] = useState<ProjectRecord[]>([]);
   const [servicesLoading, setServicesLoading] = useState(true);
@@ -121,14 +124,22 @@ export default function HomePage() {
     };
   }, []);
 
+  const officeAddress =
+    companySettings.address?.trim() ||
+    'Contact us for our current office address';
+
+  const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+    officeAddress,
+  )}`;
+
   return (
     <main className="bg-canvas text-[#202720]">
       {/* HERO */}
       <section className="relative isolate flex min-h-[520px] items-center overflow-hidden bg-[#101B2A] text-white sm:min-h-[600px] lg:min-h-[680px]">
         <div className="absolute inset-0 -z-20">
           <ResponsiveImage
-            src={images.hero}
-            alt="Solar panels with a city skyline at dusk"
+            src="/solar-hero.png"
+            alt="Solar panels on a modern rooftop at sunset"
             eager
             className="h-full w-full object-cover object-center"
           />
@@ -227,7 +238,6 @@ export default function HomePage() {
 
       {/* SERVICES — LOADED FROM SUPABASE */}
       <section className="relative overflow-hidden bg-[#06191F] pb-14 pt-20 text-white sm:pb-20 sm:pt-24 lg:pb-24 lg:pt-28">
-        {/* Reverse curved top edge */}
         <div className="absolute inset-x-0 top-0 h-10 -translate-y-px overflow-hidden sm:h-14">
           <svg
             aria-hidden="true"
@@ -285,7 +295,7 @@ export default function HomePage() {
             </div>
           ) : (
             <div className="mt-7 space-y-3 sm:mt-10 sm:grid sm:grid-cols-2 sm:gap-4 sm:space-y-0 lg:grid-cols-3">
-              {services.map((service, index) => (
+              {services.map((service) => (
                 <Link
                   key={service.id}
                   to="/services"
@@ -716,7 +726,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* LOCATE US */}
+      {/* LOCATE US — ADDRESS LOADED FROM COMPANY SETTINGS */}
       <section className="relative overflow-hidden bg-canvas text-[#172333]">
         <div className="site-container px-5 pb-12 pt-16 sm:px-8 sm:pb-16 sm:pt-20 lg:pb-16 lg:pt-24">
           <div className="max-w-xl">
@@ -764,8 +774,8 @@ export default function HomePage() {
 
                 <div
                   className="absolute left-[25%] top-[69%] z-20 flex -translate-x-1/2 -translate-y-1/2 items-center justify-center"
-                  aria-label="Approximate location of the office in Badagry, Lagos"
-                  title="Badagry, Lagos"
+                  aria-label="Approximate office location on the Nigeria map"
+                  title="Approximate office location"
                 >
                   <span className="absolute h-12 w-12 animate-ping rounded-full bg-[#278747]/20" />
 
@@ -782,7 +792,7 @@ export default function HomePage() {
                 </div>
 
                 <div className="absolute bottom-2 left-1/2 z-20 -translate-x-1/2 whitespace-nowrap rounded-full border border-[#DDE5DA] bg-white/90 px-4 py-2 text-[10px] font-bold uppercase tracking-[0.18em] text-[#278747] shadow-sm sm:bottom-0">
-                  Our location · Lagos
+                  Our office · Nigeria
                 </div>
               </div>
 
@@ -811,16 +821,15 @@ export default function HomePage() {
                     </p>
 
                     <h3 className="mt-2 font-display text-xl font-bold sm:text-2xl">
-                      Badagry, Lagos
+                      Our Office Address
                     </h3>
 
-                    <p className="mt-1 text-sm leading-7 text-[#667067]">
-                      Plot 10, Unity Avenue, Idobafe Estate Community, by
-                      Elijah Bus Stop, Badagry, Lagos State, Nigeria.
+                    <p className="mt-1 break-words text-sm leading-7 text-[#667067]">
+                      {officeAddress}
                     </p>
 
                     <a
-                      href="https://www.google.com/maps/search/?api=1&query=Plot%2010%20Unity%20Avenue%2C%20Idobafe%20Estate%20Community%2C%20by%20Elijah%20Bus%20Stop%2C%20Badagry%2C%20Lagos%2C%20Nigeria"
+                      href={mapsUrl}
                       target="_blank"
                       rel="noreferrer"
                       className="group mt-2 inline-flex items-center gap-3 text-sm font-bold text-[#278747] hover:text-[#165C30]"

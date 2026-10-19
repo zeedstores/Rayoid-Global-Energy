@@ -1223,8 +1223,21 @@ function ContentManager({
 
     onNotice('');
 
-    const title = form.title.trim();
-    const slug = makeSlug(title);
+  const title = form.title.trim();
+const baseSlug = makeSlug(title);
+
+let slug = baseSlug;
+let suffix = 2;
+
+while (
+  records.some(
+    (record) =>
+      record.slug === slug && record.id !== editing?.id,
+  )
+) {
+  slug = `${baseSlug}-${suffix}`;
+  suffix++;
+}
 
     if (!title || !slug) {
       onNotice(`Please enter a valid ${noun} title.`);

@@ -1,35 +1,55 @@
 
+import { useEffect, useState } from 'react';
 import { DemoBadge, ResponsiveImage, Button } from '../components/ui';
-import { images } from '../data/site';
+import { supabase } from '../lib/supabase';
 
-const projects = [
-  {
-    title: 'Solar Installation',
-    category: 'Solar energy',
-    image: images.solar,
-    number: '01',
-    description:
-      'Solar energy solutions for properties looking for a more dependable power supply.',
-  },
-  {
-    title: 'CCTV Installation',
-    category: 'Security systems',
-    image: images.cctv,
-    number: '02',
-    description:
-      'Security camera systems designed to improve visibility around homes and businesses.',
-  },
-  {
-    title: 'Gate Automation',
-    category: 'Access control',
-    image: images.gate,
-    number: '03',
-    description:
-      'Automated access solutions for more convenient and controlled property entry.',
-  },
-];
+type Project = {
+  id: string;
+  title: string;
+  slug: string;
+  description: string | null;
+  location: string | null;
+  image_url: string | null;
+};
 
 export default function ProjectsPage() {
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+
+  useEffect(() => {
+    let active = true;
+
+    async function loadProjects() {
+      setLoading(true);
+      setError(false);
+
+      const { data, error: fetchError } = await supabase
+        .from('projects')
+        .select('id, title, slug, description, location, image_url')
+        .eq('is_published', true)
+        .order('created_at', { ascending: false });
+
+      if (!active) return;
+
+      if (fetchError) {
+        console.error('Failed to load projects:', fetchError);
+        setError(true);
+        setProjects([]);
+      } else {
+        setProjects((data ?? []) as Project[]);
+      }
+
+      setLoading(false);
+    }
+
+    loadProjects();
+
+    return () => {
+      active = false;
+    };
+  }, []);
+
   return (
     <>
       {/* PROJECTS HERO */}
@@ -50,16 +70,13 @@ export default function ProjectsPage() {
             </h1>
 
             <p className="max-w-xl text-sm leading-7 text-white/70 sm:text-base sm:leading-8">
-              Explore the kinds of solar, security and access-control
-              solutions Raynoid provides. Verified project case studies
-              will be added as project photographs and details become
-              available.
+              Explore our solar, security and access-control projects.
+              Discover solutions delivered for homes and businesses.
             </p>
           </div>
 
-          <div className="mt-7">
-            <DemoBadge />
-          </div>
+         
+         
         </div>
       </section>
 
@@ -78,44 +95,84 @@ export default function ProjectsPage() {
             </div>
 
             <p className="max-w-md text-sm leading-7 text-[#06191F]/60">
-              Explore the services and solutions available for homes,
-              businesses and larger properties.
+              Explore our solutions for homes, businesses and larger
+              properties.
             </p>
           </div>
 
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-12 lg:gap-8">
-            {projects.map((project, index) => (
-              <article
-                key={project.number}
-                className={`group overflow-hidden rounded-2xl border border-[#06191F]/10 bg-white ${
-                  index === 0 ? 'lg:col-span-7' : 'lg:col-span-5'
-                }`}
+          {loading ? (
+            <div
+              className="py-16 text-center text-sm text-[#06191F]/60"
+              role="status"
+            >
+              Loading projects...
+            </div>
+          ) : error ? (
+            <div className="py-16 text-center">
+              <p className="text-sm text-[#06191F]/70">
+                We couldn't load the projects right now.
+              </p>
+
+              <button
+                type="button"
+                onClick={() => window.location.reload()}
+                className="mt-4 font-semibold text-[#27934F] underline underline-offset-4"
               >
-                {/* Project image */}
-                <div className="aspect-[5/3] overflow-hidden bg-[#DDE3DD]">
-                  <ResponsiveImage
-                    src={project.image}
-                    alt={`${project.category} for residential and commercial properties`}
-                  />
-                </div>
-
-                {/* Project details */}
-                <div className="p-5 sm:p-7">
-                  <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#27934F]">
-                    {project.number} / {project.category}
-                  </p>
-
-                  <h3 className="mt-3 font-display text-xl font-bold text-[#06191F] sm:text-2xl">
-                    {project.title}
-                  </h3>
-
-                  <p className="mt-3 max-w-lg text-sm leading-7 text-[#06191F]/65">
-                    {project.description}
-                  </p>
-                </div>
-              </article>
-            ))}
+                Try again
+              </button>
+            </div>
+          ) : projects.length === 0 ? (
+            <div className="py-16 text-center text-sm text-[#06191F]/60">
+              No published projects are available yet.
+            </div>
+          ) : (
+            
+<div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 lg:gap-8">
+  {projects.map((project, index) => (
+    <article
+      key={project.id}
+      className="group overflow-hidden rounded-2xl border border-[#06191F]/10 bg-white transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-[#06191F]/10"
+    >
+      {/* Project image */}
+      {project.image_url ? (
+        <div className="aspect-[5/3] overflow-hidden bg-[#DDE3DD]">
+          <div className="h-full w-full transition-transform duration-500 group-hover:scale-[1.04]">
+            <ResponsiveImage
+              src={project.image_url}
+              alt={project.title}
+            />
           </div>
+        </div>
+      ) : (
+        <div className="flex aspect-[5/3] items-center justify-center bg-[#DDE3DD] px-6 text-center text-sm text-[#06191F]/50">
+          Project image coming soon
+        </div>
+      )}
+
+      {/* Project details */}
+      <div className="p-5 sm:p-7 lg:min-h-48">
+        <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#27934F]">
+          {String(index + 1).padStart(2, '0')}
+          {project.location
+            ? ` / ${project.location}`
+            : ' / Raynoid project'}
+        </p>
+
+        <h3 className="mt-3 font-display text-xl font-bold text-[#06191F] sm:text-2xl">
+          {project.title}
+        </h3>
+
+        {project.description && (
+          <p className="mt-3 text-sm leading-7 text-[#06191F]/65">
+            {project.description}
+          </p>
+        )}
+      </div>
+    </article>
+  ))}
+</div>
+
+          )}
         </div>
       </section>
 
