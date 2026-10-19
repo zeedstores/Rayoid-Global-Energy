@@ -43,7 +43,7 @@ export default function AboutPage() {
           <div className="relative">
             <div className="aspect-[4/3] overflow-hidden rounded-2xl border border-white/10 bg-white/5 sm:aspect-[5/4]">
               <img
-  src="/assets/about-hero.PNG"
+  src="https://www.raynoidglobalenergy.com/assets/about-hero.PNG"
   alt="Raynoid energy installation"
   className="h-full w-full object-cover"
 />
@@ -131,7 +131,7 @@ export default function AboutPage() {
 
             <div className="relative aspect-[4/3] overflow-hidden rounded-2xl bg-[#E8E9E2]">
              <img
-  src="/assets/about-controls.JPG"
+  src="https://www.raynoidglobalenergy.com/assets/about-controls.JPG"
   alt="Raynoid electrical control system"
   className="h-full w-full object-cover"
 />
