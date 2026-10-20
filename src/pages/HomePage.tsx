@@ -168,6 +168,9 @@ export default function HomePage() {
               Raynoid Global Energy Ltd provides reliable solar energy
               solutions for homes, businesses and institutions across Nigeria.
             </p>
+            <p className="mt-1 text-[8px] font-medium uppercase tracking-[0.2em] text-white/65">
+  RC 9574580
+</p>
 
             <div className="mt-4 flex flex-wrap items-center gap-4">
               <Button to="/contact" className="rounded-xl bg-[#27934F]">

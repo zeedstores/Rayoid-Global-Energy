@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from 'react';
 import { Link, NavLink, Outlet, useLocation } from 'react-router';
 import { useCompanySettings } from '../hooks/useCompanySettings';
@@ -178,6 +177,16 @@ function Footer({ company }: { company: CompanyDetails }) {
               Clean energy. Smarter living.
             </span>
           </div>
+
+          {/* COMPANY REGISTRATION */}
+          <div className="mt-6 border-t border-white/10 pt-5">
+            <p className="text-[10px] font-medium uppercase tracking-[0.2em] text-white/40">
+              Company registration
+            </p>
+            <p className="mt-2 text-sm font-medium tracking-wide text-white/80">
+              RC 9574580
+            </p>
+          </div>
         </div>
 
         {/* QUICK LINKS */}
@@ -279,7 +288,9 @@ function Footer({ company }: { company: CompanyDetails }) {
             © {new Date().getFullYear()} {company.name}. All rights reserved.
           </p>
 
-          <p>{company.registration}</p>
+          <p className="tracking-wide">
+            RC 9574580
+          </p>
         </div>
 
         {/* DISCREET ADMIN LOGIN */}
